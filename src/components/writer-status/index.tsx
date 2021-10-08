@@ -1,3 +1,4 @@
+import { Button } from "@material-ui/core";
 import React from "react";
 import { useWriter } from "../../hooks/useWriter";
 import { PAYLOAD_SIZE } from "../../utils/mock";
@@ -15,15 +16,23 @@ const WriterStatus = () => {
           : "Stopped"}
       </p>
       {isWriting ? (
-        <button onClick={stop}>Stop Writing</button>
+        <Button variant="contained" onClick={stop}>
+          Stop Writing
+        </Button>
       ) : (
         <>
-          <button onClick={() => start(1000, PAYLOAD_SIZE.LARGE, 10000)}>
+          <Button
+            variant="contained"
+            onClick={() => start(1000, PAYLOAD_SIZE.LARGE, 10000)}
+          >
             Slow Big (1000 / {PAYLOAD_SIZE.LARGE} / 10000s)
-          </button>
-          <button onClick={() => start(1000, PAYLOAD_SIZE.LARGE, 10000)}>
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => start(1000, PAYLOAD_SIZE.LARGE, 10000)}
+          >
             Fast Small (1000 / {PAYLOAD_SIZE.SMALL} / 1000s)
-          </button>
+          </Button>
         </>
       )}
     </div>
