@@ -9,7 +9,6 @@ export const PerformanceTable = () => {
   return (
     <MaterialTable<RangeType>
       columns={[
-        { title: "Source", field: "source" },
         {
           title: "Duration",
           customSort: (a, b) => b.end - b.start - (a.end - a.start),
@@ -19,6 +18,8 @@ export const PerformanceTable = () => {
             return <p>{duration} MS</p>;
           },
         },
+        { title: "Num Messages", field: "numMessages", sorting: true },
+        { title: "Source", field: "source" },
       ]}
       data={writes}
       title="Writes"

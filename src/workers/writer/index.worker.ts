@@ -11,7 +11,7 @@ interface InternalState {
   dbOperator?: DatabaseOperator;
 
   // Performance meta
-  logWrite?: (start: number, end: number) => void;
+  logWrite?: (start: number, end: number, numMessages: number) => void;
 }
 
 let state: InternalState = {
@@ -34,15 +34,14 @@ const handleStart = (numMessages?: number, interval?: number) => {
       return;
     }
 
-    const mockData = generateMockRowData(numMessages || DEFAULT_WRITE_SIZE);
+    const n = numMessages || DEFAULT_WRITE_SIZE;
+    const mockData = generateMockRowData(n);
 
     const start = performance.now();
     state.dbOperator?.writeRows(mockData, () => {
       const end = performance.now();
-      console.log(
-        `[Writer] Worker wrote ${numMessages} rows in ${end - start} MS`
-      );
-      if (state.logWrite) state.logWrite(start, end);
+      console.log(`[Writer] Worker wrote ${n} rows in ${end - start} MS`);
+      if (state.logWrite) state.logWrite(start, end, n);
     });
   }, interval || DEFAULT_INTERVAL_TIMER);
 };
@@ -56,7 +55,7 @@ const handleStop = () => {
 };
 
 const handleSetPerformanceLog = (
-  logWrite: (start: number, end: number) => void
+  logWrite: (start: number, end: number, numMessages: number) => void
 ) => {
   state.logWrite = logWrite;
 };

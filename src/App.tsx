@@ -27,7 +27,7 @@ const App = () => {
       const end = performance.now();
       console.log(`[Writer] Wrote ${n} rows in ${end - start} MS`);
 
-      logWriteRanges([{ start, end, source: "manual" }]);
+      logWriteRanges([{ start, end, source: "manual", numMessages: n }]);
     },
     [logWriteRanges]
   );

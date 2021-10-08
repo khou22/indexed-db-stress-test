@@ -29,8 +29,10 @@ export const useWriter = () => {
   useEffect(() => {
     if (!workerID || !workerAPI.current) return;
     workerAPI.current.handleSetPerformanceLog(
-      proxy((start: number, end: number) => {
-        logWriteRanges([{ source: `writer-${workerID}`, start, end }]);
+      proxy((start: number, end: number, numMessages: number) => {
+        logWriteRanges([
+          { source: `writer-${workerID}`, start, end, numMessages },
+        ]);
       })
     );
   }, [logWriteRanges, workerID]);
