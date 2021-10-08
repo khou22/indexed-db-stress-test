@@ -8,7 +8,7 @@ import PerformanceContext, {
 } from "./context/performance";
 import { mainDatabaseOperator } from "./db/mainOperator";
 import "./index.css";
-import { generateMockRowData } from "./utils/mock";
+import { generateMockRowData, PAYLOAD_SIZE } from "./utils/mock";
 
 const App = () => {
   const { logWriteRanges } = useContext(PerformanceContext);
@@ -20,14 +20,23 @@ const App = () => {
   }, []);
 
   const handleAddRows = useCallback(
-    async (n: number) => {
+    async (n: number, payloadSize: number) => {
       const start = performance.now();
-      const mockData = generateMockRowData(n);
+      const mockData = generateMockRowData(n, payloadSize);
       await mainDatabaseOperator.writeRows(mockData);
       const end = performance.now();
       console.log(`[Writer] Wrote ${n} rows in ${end - start} MS`);
 
-      logWriteRanges([{ start, end, source: "manual", numMessages: n }]);
+      logWriteRanges([
+        {
+          type: "write",
+          start,
+          end,
+          source: "manual",
+          numMessages: n,
+          payloadSize,
+        },
+      ]);
     },
     [logWriteRanges]
   );
@@ -35,9 +44,40 @@ const App = () => {
   return (
     <div className="App">
       <h1>Indexed DB + Web Workers Demo</h1>
-      <button onClick={() => handleAddRows(1)}>Add 1</button>
-      <button onClick={() => handleAddRows(100)}>Add 100</button>
-      <button onClick={() => handleAddRows(10000)}>Add 10000</button>
+      <button onClick={() => handleAddRows(1, PAYLOAD_SIZE.SMALL)}>
+        Add 1 Small
+      </button>
+      <button onClick={() => handleAddRows(100, PAYLOAD_SIZE.SMALL)}>
+        Add 100 Small
+      </button>
+      <button onClick={() => handleAddRows(1000, PAYLOAD_SIZE.SMALL)}>
+        Add 1000 Small
+      </button>
+
+      <hr />
+
+      <button onClick={() => handleAddRows(1, PAYLOAD_SIZE.MEDIUM)}>
+        Add 1 Medium
+      </button>
+      <button onClick={() => handleAddRows(100, PAYLOAD_SIZE.MEDIUM)}>
+        Add 100 Medium
+      </button>
+      <button onClick={() => handleAddRows(1000, PAYLOAD_SIZE.MEDIUM)}>
+        Add 1000 Medium
+      </button>
+
+      <hr />
+      <button onClick={() => handleAddRows(1, PAYLOAD_SIZE.LARGE)}>
+        Add 1 Large
+      </button>
+      <button onClick={() => handleAddRows(100, PAYLOAD_SIZE.LARGE)}>
+        Add 100 Large
+      </button>
+      <button onClick={() => handleAddRows(1000, PAYLOAD_SIZE.LARGE)}>
+        Add 1000 Large
+      </button>
+
+      <hr />
       <button
         onClick={() =>
           mainDatabaseOperator

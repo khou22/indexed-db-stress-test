@@ -2,6 +2,7 @@ import MaterialTable from "material-table";
 import { useContext } from "react";
 import PerformanceContext from "../../context/performance";
 import { RangeType } from "../../context/performance/types";
+import { tableIcons } from "./icons";
 
 export const PerformanceTable = () => {
   const { writes } = useContext(PerformanceContext);
@@ -10,17 +11,25 @@ export const PerformanceTable = () => {
     <MaterialTable<RangeType>
       columns={[
         {
-          title: "Duration",
+          title: "Duration (MS)",
           customSort: (a, b) => b.end - b.start - (a.end - a.start),
           render: (rowData) => {
             const { start, end } = rowData;
             const duration = end - start;
-            return <p>{duration} MS</p>;
+            return duration.toFixed(0);
           },
+          defaultSort: "desc",
         },
         { title: "Num Messages", field: "numMessages", sorting: true },
+        { title: "Payload Size", field: "payloadSize", sorting: true },
         { title: "Source", field: "source" },
       ]}
+      icons={tableIcons}
+      options={{
+        grouping: true,
+        pageSize: 20,
+        exportAllData: true,
+      }}
       data={writes}
       title="Writes"
     />

@@ -38,10 +38,12 @@ const TimelineRangeChart: React.FC = () => {
     return [
       {
         name: "reads",
-        data: reads.map((readRange) => ({
-          x: readRange.source,
-          y: [readRange.start, readRange.end],
-        })),
+        data: reads
+          .filter((r) => r.type === "read")
+          .map((readRange) => ({
+            x: readRange.source,
+            y: [readRange.start, readRange.end],
+          })),
       },
       {
         name: "writes",

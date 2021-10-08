@@ -2,16 +2,18 @@ import { expose } from "comlink";
 import { DatabaseOperator } from "../../db";
 import { generateMockRowData } from "../../utils/mock";
 
-const DEFAULT_WRITE_SIZE = 100;
-const DEFAULT_INTERVAL_TIMER = 1000;
-
 interface InternalState {
   id?: string;
   currentTimer?: NodeJS.Timeout;
   dbOperator?: DatabaseOperator;
 
   // Performance meta
-  logWrite?: (start: number, end: number, numMessages: number) => void;
+  logWrite?: (
+    start: number,
+    end: number,
+    numMessages: number,
+    payloadSize: number
+  ) => void;
 }
 
 let state: InternalState = {
@@ -25,7 +27,11 @@ const init = (id: string) => {
   state.dbOperator = new DatabaseOperator();
 };
 
-const handleStart = (numMessages?: number, interval?: number) => {
+const handleStart = (
+  numMessages: number,
+  payloadSize: number,
+  interval: number
+) => {
   console.log(`[Writer ${state.id}] Starting`);
 
   state.currentTimer = setInterval(async () => {
@@ -34,16 +40,17 @@ const handleStart = (numMessages?: number, interval?: number) => {
       return;
     }
 
-    const n = numMessages || DEFAULT_WRITE_SIZE;
-    const mockData = generateMockRowData(n);
+    const mockData = generateMockRowData(numMessages, payloadSize);
 
     const start = performance.now();
     state.dbOperator?.writeRows(mockData, () => {
       const end = performance.now();
-      console.log(`[Writer] Worker wrote ${n} rows in ${end - start} MS`);
-      if (state.logWrite) state.logWrite(start, end, n);
+      console.log(
+        `[Writer] Worker wrote ${numMessages} rows in ${end - start} MS`
+      );
+      if (state.logWrite) state.logWrite(start, end, numMessages, payloadSize);
     });
-  }, interval || DEFAULT_INTERVAL_TIMER);
+  }, interval);
 };
 
 const handleStop = () => {
@@ -55,7 +62,12 @@ const handleStop = () => {
 };
 
 const handleSetPerformanceLog = (
-  logWrite: (start: number, end: number, numMessages: number) => void
+  logWrite: (
+    start: number,
+    end: number,
+    numMessages: number,
+    payloadSize: number
+  ) => void
 ) => {
   state.logWrite = logWrite;
 };

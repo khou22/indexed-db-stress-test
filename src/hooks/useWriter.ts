@@ -9,6 +9,7 @@ export const useWriter = () => {
 
   const [workerID, setWorkerID] = useState<string | null>(null);
   const [intervalTime, setIntervalTime] = useState<number | null>(null);
+  const [payloadSize, setPayloadSize] = useState<number | null>(null);
   const [numMessages, setNumMessages] = useState<number | null>(null);
   const workerInstance = useRef<Worker | null>(null);
   const workerAPI = useRef<WriterWorkerAPI | null>(null);
@@ -29,20 +30,35 @@ export const useWriter = () => {
   useEffect(() => {
     if (!workerID || !workerAPI.current) return;
     workerAPI.current.handleSetPerformanceLog(
-      proxy((start: number, end: number, numMessages: number) => {
-        logWriteRanges([
-          { source: `writer-${workerID}`, start, end, numMessages },
-        ]);
-      })
+      proxy(
+        (
+          start: number,
+          end: number,
+          numMessages: number,
+          payloadSize: number
+        ) => {
+          logWriteRanges([
+            {
+              type: "write",
+              source: `writer-${workerID}`,
+              start,
+              end,
+              numMessages,
+              payloadSize,
+            },
+          ]);
+        }
+      )
     );
   }, [logWriteRanges, workerID]);
 
   const handleStart = useCallback(
-    (numMessages?: number, interval?: number) => {
+    (numMessages: number, payloadSize: number, interval: number) => {
       setIsWriting(true);
-      setNumMessages(numMessages || null);
-      setIntervalTime(interval || null);
-      workerAPI.current?.start(numMessages, interval);
+      setNumMessages(numMessages);
+      setIntervalTime(interval);
+      setPayloadSize(payloadSize);
+      workerAPI.current?.start(numMessages, payloadSize, interval);
     },
     [setIsWriting]
   );
@@ -51,6 +67,7 @@ export const useWriter = () => {
     setIsWriting(false);
     setNumMessages(null);
     setIntervalTime(null);
+    setPayloadSize(null);
     workerAPI.current?.stop();
   }, [setIsWriting]);
 
@@ -58,6 +75,7 @@ export const useWriter = () => {
     id: workerID,
     numMessages,
     intervalTime,
+    payloadSize,
     isWriting,
     start: handleStart,
     stop: handleStop,
