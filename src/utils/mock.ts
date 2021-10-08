@@ -2,7 +2,7 @@ import { RowData } from "../models";
 
 const MIN_TIMESTAMP = 1000;
 
-const possibleNames = ["apple", "banana", "clementine", "dragonfruit"];
+export const POSSIBLE_NAMES = ["apple", "banana", "clementine", "dragonfruit"];
 
 // Unmasked planner_viz is 430,000 bytes or so
 // Inconsistently running into OOM errors allocating buffer.
@@ -28,7 +28,7 @@ export const generateMockRowData = (
     mockData.push({
       id: `${i}`,
       timestamp,
-      name: possibleNames[Math.floor(Math.random() * possibleNames.length)],
+      name: POSSIBLE_NAMES[Math.floor(Math.random() * POSSIBLE_NAMES.length)],
       payload: mockPayload,
     });
   }

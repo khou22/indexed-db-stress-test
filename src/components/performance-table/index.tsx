@@ -33,7 +33,7 @@ export const PerformanceTable = () => {
       options={{
         grouping: true,
         pageSize: 20,
-        exportAllData: true,
+        exportButton: true,
       }}
       data={writes}
       title="Writes"
