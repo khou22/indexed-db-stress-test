@@ -1,4 +1,6 @@
+import { Button } from "@material-ui/core";
 import React, { useCallback, useContext, useEffect, useState } from "react";
+import "./App.css";
 import { PerformanceTable } from "./components/performance-table";
 import TimelineRangeChart from "./components/performance-viz";
 import { StopWatch } from "./components/stopwatch";
@@ -11,7 +13,8 @@ import "./index.css";
 import { generateMockRowData, PAYLOAD_SIZE } from "./utils/mock";
 
 const App = () => {
-  const { logWriteRanges } = useContext(PerformanceContext);
+  const { logWriteRanges, estimatedMessagesAlreadySaved } =
+    useContext(PerformanceContext);
   const [showPerformance, setShowPerformance] = useState(false);
   const [showWritesTable, setShowWritesTable] = useState(false);
 
@@ -35,50 +38,99 @@ const App = () => {
           source: "manual",
           numMessages: n,
           payloadSize,
+          estimatedMessagesAlreadySaved:
+            estimatedMessagesAlreadySaved?.current || 0,
         },
       ]);
     },
-    [logWriteRanges]
+    [logWriteRanges, estimatedMessagesAlreadySaved]
   );
 
   return (
     <div className="App">
       <h1>Indexed DB + Web Workers Demo</h1>
-      <button onClick={() => handleAddRows(1, PAYLOAD_SIZE.SMALL)}>
+      <Button
+        variant="outlined"
+        onClick={() => handleAddRows(1, PAYLOAD_SIZE.SMALL)}
+      >
         Add 1 Small
-      </button>
-      <button onClick={() => handleAddRows(100, PAYLOAD_SIZE.SMALL)}>
+      </Button>
+      <Button
+        variant="outlined"
+        onClick={() => handleAddRows(100, PAYLOAD_SIZE.SMALL)}
+      >
         Add 100 Small
-      </button>
-      <button onClick={() => handleAddRows(1000, PAYLOAD_SIZE.SMALL)}>
-        Add 1000 Small
-      </button>
+      </Button>
+      <Button
+        variant="outlined"
+        onClick={() => handleAddRows(1000, PAYLOAD_SIZE.SMALL)}
+      >
+        Add 1K Small
+      </Button>
+      <Button
+        variant="outlined"
+        onClick={() => handleAddRows(10000, PAYLOAD_SIZE.SMALL)}
+      >
+        Add 10K Small
+      </Button>
 
       <hr />
 
-      <button onClick={() => handleAddRows(1, PAYLOAD_SIZE.MEDIUM)}>
+      <Button
+        variant="outlined"
+        onClick={() => handleAddRows(1, PAYLOAD_SIZE.MEDIUM)}
+      >
         Add 1 Medium
-      </button>
-      <button onClick={() => handleAddRows(100, PAYLOAD_SIZE.MEDIUM)}>
+      </Button>
+      <Button
+        variant="outlined"
+        onClick={() => handleAddRows(100, PAYLOAD_SIZE.MEDIUM)}
+      >
         Add 100 Medium
-      </button>
-      <button onClick={() => handleAddRows(1000, PAYLOAD_SIZE.MEDIUM)}>
-        Add 1000 Medium
-      </button>
+      </Button>
+      <Button
+        variant="outlined"
+        onClick={() => handleAddRows(1000, PAYLOAD_SIZE.MEDIUM)}
+      >
+        Add 1K Medium
+      </Button>
+      <Button
+        variant="outlined"
+        onClick={() => handleAddRows(10000, PAYLOAD_SIZE.MEDIUM)}
+      >
+        Add 10K Medium
+      </Button>
 
       <hr />
-      <button onClick={() => handleAddRows(1, PAYLOAD_SIZE.LARGE)}>
+      <Button
+        variant="outlined"
+        onClick={() => handleAddRows(1, PAYLOAD_SIZE.LARGE)}
+      >
         Add 1 Large
-      </button>
-      <button onClick={() => handleAddRows(100, PAYLOAD_SIZE.LARGE)}>
+      </Button>
+      <Button
+        variant="outlined"
+        onClick={() => handleAddRows(100, PAYLOAD_SIZE.LARGE)}
+      >
         Add 100 Large
-      </button>
-      <button onClick={() => handleAddRows(1000, PAYLOAD_SIZE.LARGE)}>
-        Add 1000 Large
-      </button>
+      </Button>
+      <Button
+        variant="outlined"
+        onClick={() => handleAddRows(1000, PAYLOAD_SIZE.LARGE)}
+      >
+        Add 1K Large
+      </Button>
+      <Button
+        variant="outlined"
+        onClick={() => handleAddRows(10000, PAYLOAD_SIZE.LARGE)}
+      >
+        Add 10K Large
+      </Button>
 
       <hr />
-      <button
+      <Button
+        variant="contained"
+        color="secondary"
         onClick={() =>
           mainDatabaseOperator
             .connectToDB()
@@ -90,7 +142,7 @@ const App = () => {
         }
       >
         Wipe DB
-      </button>
+      </Button>
 
       <p>
         Hitch Detector: <StopWatch />
@@ -99,15 +151,21 @@ const App = () => {
       <hr />
 
       <h2>Writes</h2>
-      <button onClick={() => setShowWritesTable((prev) => !prev)}>
+      <Button
+        variant="contained"
+        onClick={() => setShowWritesTable((prev) => !prev)}
+      >
         {showWritesTable ? "Hide" : "Show Writes"}
-      </button>
+      </Button>
       {showWritesTable && <PerformanceTable />}
 
       <h2>Performance</h2>
-      <button onClick={() => setShowPerformance((prev) => !prev)}>
+      <Button
+        variant="outlined"
+        onClick={() => setShowPerformance((prev) => !prev)}
+      >
         {showPerformance ? "Hide" : "Show"}
-      </button>
+      </Button>
       {showPerformance && <TimelineRangeChart />}
 
       <hr />

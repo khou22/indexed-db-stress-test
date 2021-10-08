@@ -6,6 +6,7 @@ export type RangeType =
       end: number;
       numMessages: number;
       payloadSize: number;
+      estimatedMessagesAlreadySaved: number;
     }
   | {
       type: "read";

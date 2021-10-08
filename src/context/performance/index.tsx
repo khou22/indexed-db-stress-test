@@ -1,7 +1,9 @@
-import React, { useCallback, useState } from "react";
+import _ from "lodash";
+import React, { RefObject, useCallback, useRef, useState } from "react";
 import { RangeType } from "./types";
 
 interface PerformanceContextProps {
+  estimatedMessagesAlreadySaved: RefObject<number> | null;
   reads: RangeType[];
   logReadRanges: (ranges: RangeType[]) => void;
   writes: RangeType[];
@@ -15,6 +17,7 @@ type PublicProps = {
 const useContextValue = (): PerformanceContextProps => {
   const [readRanges, setReadRanges] = useState<RangeType[]>([]);
   const [writeRanges, setWriteRanges] = useState<RangeType[]>([]);
+  const estimatedMessagesAlreadySaved = useRef(0);
 
   const logReadRanges = useCallback(
     (ranges: RangeType[]) => {
@@ -25,12 +28,16 @@ const useContextValue = (): PerformanceContextProps => {
 
   const logWriteRanges = useCallback(
     (ranges: RangeType[]) => {
+      estimatedMessagesAlreadySaved.current += _.sum(
+        ranges.map((r) => (r.type === "write" ? r.numMessages : 0))
+      );
       setWriteRanges((oldRanges) => oldRanges.concat(ranges));
     },
     [setWriteRanges]
   );
 
   return {
+    estimatedMessagesAlreadySaved: estimatedMessagesAlreadySaved,
     reads: readRanges,
     logReadRanges,
     writes: writeRanges,
@@ -39,6 +46,7 @@ const useContextValue = (): PerformanceContextProps => {
 };
 
 const defaultValue: PerformanceContextProps = {
+  estimatedMessagesAlreadySaved: null,
   reads: [],
   logReadRanges: () => console.log("logReadRanges not set"),
   writes: [],

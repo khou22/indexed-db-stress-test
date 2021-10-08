@@ -22,6 +22,11 @@ export const PerformanceTable = () => {
         },
         { title: "Num Messages", field: "numMessages", sorting: true },
         { title: "Payload Size", field: "payloadSize", sorting: true },
+        {
+          title: "Estimated Existing",
+          field: "estimatedMessagesAlreadySaved",
+          sorting: true,
+        },
         { title: "Source", field: "source" },
       ]}
       icons={tableIcons}

@@ -14,7 +14,8 @@ export const useWriter = () => {
   const workerInstance = useRef<Worker | null>(null);
   const workerAPI = useRef<WriterWorkerAPI | null>(null);
 
-  const { logWriteRanges } = useContext(PerformanceContext);
+  const { logWriteRanges, estimatedMessagesAlreadySaved } =
+    useContext(PerformanceContext);
 
   useEffect(() => {
     if (workerAPI.current) return;
@@ -45,12 +46,14 @@ export const useWriter = () => {
               end,
               numMessages,
               payloadSize,
+              estimatedMessagesAlreadySaved:
+                estimatedMessagesAlreadySaved?.current || 0,
             },
           ]);
         }
       )
     );
-  }, [logWriteRanges, workerID]);
+  }, [logWriteRanges, workerID, estimatedMessagesAlreadySaved]);
 
   const handleStart = useCallback(
     (numMessages: number, payloadSize: number, interval: number) => {
