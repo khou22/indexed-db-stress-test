@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import TimelineRangeChart from "./components/performance-viz";
 import { StopWatch } from "./components/stopwatch";
 import WriterStatus from "./components/writer-status";
@@ -10,6 +10,10 @@ import { generateMockRowData } from "./utils/mock";
 const App = () => {
   const { logWriteRanges } = useContext(PerformanceContext);
   const [showPerformance, setShowPerformance] = useState(false);
+
+  useEffect(() => {
+    mainDatabaseOperator.initDB();
+  }, []);
 
   const handleAddRows = useCallback(
     async (n: number) => {

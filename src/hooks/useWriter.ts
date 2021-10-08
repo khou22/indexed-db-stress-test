@@ -21,6 +21,7 @@ export const useWriter = () => {
     const id = uuidv4();
     workerInstance.current = new WriterWorker();
     workerAPI.current = wrap(workerInstance.current);
+    workerAPI.current.init(id);
 
     setWorkerID(id);
   }, [setWorkerID]);

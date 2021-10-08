@@ -7,7 +7,6 @@ const DEFAULT_INTERVAL_TIMER = 1000;
 
 interface InternalState {
   id?: string;
-  dbWorkerPort?: MessagePort;
   currentTimer?: NodeJS.Timeout;
   dbOperator?: DatabaseOperator;
 
@@ -20,9 +19,8 @@ let state: InternalState = {
   currentTimer: undefined,
 };
 
-const init = (id: string, dbWorkerPort: MessagePort) => {
+const init = (id: string) => {
   state.id = id;
-  state.dbWorkerPort = dbWorkerPort;
 
   state.dbOperator = new DatabaseOperator();
 };
