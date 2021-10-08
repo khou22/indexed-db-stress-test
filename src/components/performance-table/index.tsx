@@ -12,7 +12,7 @@ export const PerformanceTable = () => {
       columns={[
         {
           title: "Duration (MS)",
-          customSort: (a, b) => b.end - b.start - (a.end - a.start),
+          customSort: (a, b) => a.end - a.start - (b.end - b.start),
           render: (rowData) => {
             const { start, end } = rowData;
             const duration = end - start;

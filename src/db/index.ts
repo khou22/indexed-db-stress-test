@@ -59,7 +59,7 @@ export class DatabaseOperator {
   processRow = (row: RowData): RowData => {
     return {
       ...row,
-      payload: row.payload.slice(),
+      payload: row.payload,
     };
   };
 

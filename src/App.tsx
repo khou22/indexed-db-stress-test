@@ -1,6 +1,7 @@
 import { Button } from "@material-ui/core";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import "./App.css";
+import { PerformanceHistogram } from "./components/performance-histogram";
 import { PerformanceTable } from "./components/performance-table";
 import TimelineRangeChart from "./components/performance-viz";
 import { StopWatch } from "./components/stopwatch";
@@ -166,7 +167,12 @@ const App = () => {
       >
         {showPerformance ? "Hide" : "Show"}
       </Button>
-      {showPerformance && <TimelineRangeChart />}
+      {showPerformance && (
+        <>
+          <PerformanceHistogram />
+          <TimelineRangeChart />
+        </>
+      )}
 
       <hr />
 
