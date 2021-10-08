@@ -36,9 +36,13 @@ const handleStart = (numMessages?: number, interval?: number) => {
 
     const mockData = generateMockRowData(numMessages || DEFAULT_WRITE_SIZE);
 
-    const start = Date.now();
+    const start = performance.now();
     state.dbOperator?.writeRows(mockData, () => {
-      if (state.logWrite) state.logWrite(start, Date.now());
+      const end = performance.now();
+      console.log(
+        `[Writer] Worker wrote ${numMessages} rows in ${end - start} MS`
+      );
+      if (state.logWrite) state.logWrite(start, end);
     });
   }, interval || DEFAULT_INTERVAL_TIMER);
 };

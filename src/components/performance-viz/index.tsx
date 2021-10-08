@@ -1,4 +1,5 @@
 import ApexCharts from "apexcharts";
+import moment from "moment";
 import { useContext, useMemo } from "react";
 import Chart from "react-apexcharts";
 import PerformanceContext from "../../context/performance";
@@ -52,6 +53,24 @@ const TimelineRangeChart: React.FC = () => {
     ];
   }, [reads, writes]);
 
+  const rowNodes = useMemo(
+    () =>
+      writes.map((writeRange) => {
+        const start = moment(writeRange.start);
+        const end = moment(writeRange.end);
+        const duration = writeRange.end - writeRange.start;
+        return (
+          <tr>
+            <td>{writeRange.source}</td>
+            <td>{start.format("HH:mm:ss.SSSS")}</td>
+            <td>{end.format("HH:mm:ss.SSSS")}</td>
+            <td>{duration}</td>
+          </tr>
+        );
+      }),
+    [writes]
+  );
+
   return (
     <div id="chart">
       <Chart
@@ -60,6 +79,16 @@ const TimelineRangeChart: React.FC = () => {
         type="rangeBar"
         height={450}
       />
+
+      <table>
+        <th>
+          <td>Source</td>
+          <td>Start</td>
+          <td>End</td>
+          <td>Duration</td>
+        </th>
+        {rowNodes}
+      </table>
     </div>
   );
 };
