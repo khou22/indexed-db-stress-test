@@ -19,11 +19,24 @@ const App = () => {
     useContext(PerformanceContext);
   const [showPerformance, setShowPerformance] = useState(false);
   const [showWritesTable, setShowWritesTable] = useState(false);
+  const [isReading, setIsReading] = useState(false);
   const { readAll } = useReader();
 
   useEffect(() => {
     mainDatabaseOperator.initDB();
   }, []);
+
+  const handleReadAll = useCallback(() => {
+    setIsReading(true);
+    readAll((rowData, { readTime, transferTime }) => {
+      setIsReading(false);
+      console.log(
+        `[Reader] ${rowData.length} [read: ${readTime.toFixed(
+          1
+        )}] [transfer: ${transferTime.toFixed(1)}]`
+      );
+    });
+  }, [readAll]);
 
   const handleAddRows = useCallback(
     async (n: number, payloadSize: number) => {
@@ -52,8 +65,8 @@ const App = () => {
   return (
     <div className="App">
       <h1>Indexed DB + Web Workers Demo</h1>
-      <Button variant="outlined" onClick={() => readAll()}>
-        Read All
+      <Button variant="outlined" onClick={handleReadAll} disabled={isReading}>
+        {isReading ? "Reading..." : "Read All"}
       </Button>
       <hr />
       <Button

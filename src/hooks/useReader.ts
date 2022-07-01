@@ -2,6 +2,7 @@ import { proxy, wrap } from "comlink";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import PerformanceContext from "../context/performance";
+import { ReadPerformanceMetadataType, RowData } from "../models";
 import ReaderWorker, { ReaderWorkerAPI } from "../workers/reader/index.worker";
 
 export const useReader = () => {
@@ -40,14 +41,26 @@ export const useReader = () => {
     );
   }, [logReadRanges, workerID, estimatedMessagesAlreadySaved]);
 
-  const handleReadAll = useCallback(() => {
-    if (!workerAPI.current) return;
-    workerAPI.current.readAll(
-      proxy((rowData) => {
-        console.log("[Reader] Received row data on main thread", rowData);
-      })
-    );
-  }, []);
+  const handleReadAll = useCallback(
+    (
+      onCompletion: (
+        rowData: RowData[],
+        meta: ReadPerformanceMetadataType
+      ) => void
+    ) => {
+      if (!workerAPI.current) return;
+      workerAPI.current.readAll(
+        proxy((rowData, calledAt, readTime) => {
+          const completedAt = performance.now();
+          onCompletion(rowData, {
+            readTime,
+            transferTime: completedAt - calledAt,
+          });
+        })
+      );
+    },
+    []
+  );
 
   return {
     id: workerID,

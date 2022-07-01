@@ -22,19 +22,16 @@ const init = (id: string) => {
   state.dbOperator = new DatabaseOperator();
 };
 
-const handleReadAll = (onComplete: (rowData: RowData[]) => void) => {
+const handleReadAll = (
+  onComplete: (rowData: RowData[], calledAt: number, readTime: number) => void
+) => {
   if (!state.dbOperator) return;
 
   const start = performance.now();
   state.dbOperator.getRows().then((rows) => {
     const end = performance.now();
-    console.log(
-      `[Reader ${state.id}] Read ${rows.length} in ${(end - start).toFixed(
-        0
-      )}MS on worker thread.`
-    );
     if (state.logRead) state.logRead(start, end, rows.length);
-    onComplete(rows);
+    onComplete(rows, performance.now(), end - start);
   });
 };
 

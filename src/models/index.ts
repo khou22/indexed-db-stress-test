@@ -4,3 +4,8 @@ export type RowData = {
   name: string;
   payload: Uint8Array;
 };
+
+export type ReadPerformanceMetadataType = {
+  readTime: number;
+  transferTime: number;
+};
