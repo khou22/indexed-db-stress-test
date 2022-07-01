@@ -1,5 +1,5 @@
 import { Button } from "@material-ui/core";
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import "./App.css";
 import { PerformanceHistogram } from "./components/performance-histogram";
 import { PerformanceTable } from "./components/performance-table";
@@ -10,6 +10,7 @@ import PerformanceContext, {
   PerformanceContextManager,
 } from "./context/performance";
 import { mainDatabaseOperator } from "./db/mainOperator";
+import { useReader } from "./hooks/useReader";
 import "./index.css";
 import { generateMockRowData, PAYLOAD_SIZE } from "./utils/mock";
 
@@ -18,6 +19,7 @@ const App = () => {
     useContext(PerformanceContext);
   const [showPerformance, setShowPerformance] = useState(false);
   const [showWritesTable, setShowWritesTable] = useState(false);
+  const { readAll } = useReader();
 
   useEffect(() => {
     mainDatabaseOperator.initDB();
@@ -50,6 +52,10 @@ const App = () => {
   return (
     <div className="App">
       <h1>Indexed DB + Web Workers Demo</h1>
+      <Button variant="outlined" onClick={() => readAll()}>
+        Read All
+      </Button>
+      <hr />
       <Button
         variant="outlined"
         onClick={() => handleAddRows(1, PAYLOAD_SIZE.SMALL)}

@@ -55,7 +55,7 @@ const TimelineRangeChart: React.FC = () => {
     ];
   }, [reads, writes]);
 
-  const rowNodes = useMemo(
+  const writeRows = useMemo(
     () =>
       writes.map((writeRange) => {
         const start = moment(writeRange.start);
@@ -71,6 +71,25 @@ const TimelineRangeChart: React.FC = () => {
         );
       }),
     [writes]
+  );
+
+  const readRows = useMemo(
+    () =>
+      reads.map((readRange) => {
+        const start = moment(readRange.start);
+        const end = moment(readRange.end);
+        const duration = readRange.end - readRange.start;
+        return (
+          <tr>
+            <td>{readRange.source}</td>
+            <td>{start.format("HH:mm:ss.SSSS")}</td>
+            <td>{end.format("HH:mm:ss.SSSS")}</td>
+            <td>{duration}</td>
+            <td>{readRange.numMessages}</td>
+          </tr>
+        );
+      }),
+    [reads]
   );
 
   return (
@@ -89,7 +108,18 @@ const TimelineRangeChart: React.FC = () => {
           <td>End</td>
           <td>Duration</td>
         </th>
-        {rowNodes}
+        {writeRows}
+      </table>
+
+      <table>
+        <th>
+          <td>Source</td>
+          <td>Start</td>
+          <td>End</td>
+          <td>Duration</td>
+          <td>Num Messages</td>
+        </th>
+        {readRows}
       </table>
     </div>
   );

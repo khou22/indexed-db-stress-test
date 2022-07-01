@@ -108,4 +108,10 @@ export class DatabaseOperator {
 
     if (onComplete) onComplete(rows.length);
   };
+
+  getRows = async (): Promise<RowData[]> => {
+    const db = await this.connectToDB();
+    const allRows = (await db.getAll(DB_STORE)) as RowData[];
+    return allRows;
+  };
 }

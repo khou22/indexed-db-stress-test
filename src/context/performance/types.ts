@@ -11,6 +11,7 @@ export type RangeType =
   | {
       type: "read";
       source: string;
+      numMessages: number;
       start: number;
       end: number;
     };
