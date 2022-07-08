@@ -23,7 +23,7 @@ const init = (id: string) => {
 };
 
 const handleReadAll = (
-  onComplete: (rowData: RowData[], calledAt: number, readTime: number) => void
+  onComplete: (rowData: RowData[], calledAt: Date, readTime: number) => void
 ) => {
   if (!state.dbOperator) return;
 
@@ -31,7 +31,7 @@ const handleReadAll = (
   state.dbOperator.getRows().then((rows) => {
     const end = performance.now();
     if (state.logRead) state.logRead(start, end, rows.length);
-    onComplete(rows, performance.now(), end - start);
+    onComplete(rows, new Date(), end - start);
   });
 };
 

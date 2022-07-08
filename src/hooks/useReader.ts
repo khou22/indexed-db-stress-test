@@ -51,10 +51,10 @@ export const useReader = () => {
       if (!workerAPI.current) return;
       workerAPI.current.readAll(
         proxy((rowData, calledAt, readTime) => {
-          const completedAt = performance.now();
+          const completedAt = new Date();
           onCompletion(rowData, {
             readTime,
-            transferTime: completedAt - calledAt,
+            transferTime: completedAt.getTime() - calledAt.getTime(),
           });
         })
       );
