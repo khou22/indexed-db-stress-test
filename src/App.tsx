@@ -12,6 +12,7 @@ import PerformanceContext, {
 import { mainDatabaseOperator } from "./db/mainOperator";
 import { useReader } from "./hooks/useReader";
 import "./index.css";
+import { humanFileSize, payloadSize } from "./utils/eval";
 import { generateMockRowData, PAYLOAD_SIZE } from "./utils/mock";
 
 const App = () => {
@@ -31,7 +32,9 @@ const App = () => {
     readAll((rowData, { readTime, transferTime }) => {
       setIsReading(false);
       console.log(
-        `[Reader] ${rowData.length} [read: ${readTime.toFixed(
+        `[Reader] ${rowData.length} items, ${humanFileSize(
+          payloadSize(rowData)
+        )} bytes [read: ${readTime.toFixed(
           1
         )}] [transfer: ${transferTime.toFixed(1)}]`
       );
